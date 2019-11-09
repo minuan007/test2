@@ -1,0 +1,169 @@
+set nocompatible
+filetype off
+
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'Buffergator'
+Plugin 'ctrlp.vim'
+Plugin 'itchyny/lightline.vim'
+call vundle#end()
+filetype plugin indent on
+"for Buffergator
+let g:buffergator_autodismiss_on_select = 0
+let g:buffergator_sort_regime    = "filepath"
+let g:buffergator_autoupdate = 1
+"cursor line
+function s:SetCursorLine()
+    set cursorline
+    hi cursorline cterm=none ctermbg=darkblue ctermfg=white
+endfunction
+autocmd VimEnter * call s:SetCursorLine()
+"ctrlP
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip
+let g:ctrlp_working_path_mode = 0
+"lightline
+set laststatus=2 " turn on bottom bar
+if !has('gui_running')
+  set t_Co=256
+endif
+let g:lightline = {
+      \ 'colorscheme': 'deus',
+	  \}
+
+let s:cuicolor = {
+            \ 'darkestgreen'   : 22,
+            \ 'brightgreen'    : 148,
+            \ 'gray0'          : 233,
+            \ 'gray1'          : 235,
+            \ 'gray2'          : 236,
+            \ 'gray3'          : 239,
+            \ 'gray4'          : 240,
+            \ 'gray5'          : 241,
+            \ 'gray6'          : 244,
+            \ 'gray7'          : 245,
+            \ 'gray8'          : 247,
+            \ 'gray9'          : 250,
+            \ 'gray10'         : 252,
+            \}
+
+let s:palette = g:lightline#colorscheme#{g:lightline.colorscheme}#palette
+let s:palette.normal.left = [ ['#005f00', '#afdf00', s:cuicolor.darkestgreen, s:cuicolor.brightgreen], ['#585858', '#121212', s:cuicolor.gray4, s:cuicolor.gray1] ]
+"session
+"nmap <F2> :mks! ~/.vim/sessions/
+"clipboard
+"----------------------------
+"ctags
+"--------------------------
+set mouse=a
+set tags=tags;
+set tags=./tags,tags
+set tags+=~/tags
+"set tags+=/home/minuan.ghil/svn_code/16_SOUNDBAR_MTK/master/release/BDP_Generic/custom_lg/lg/src/tags
+"set tags+=/home/minuan.ghil/svn_code/16_SOUNDBAR_MTK/master/release/BDP_Generic/src/tags
+set tags+=/usr/src/linux/tags
+set tags+=/home/minuan.ghil/svn_code/SK9/tags
+"---------------------------------
+"cscope
+"--------------------------------
+set csprg=/usr/bin/cscope 
+set csto=0 
+set cst 
+function! LoadCscope()
+ let db = findfile("cscope.out", ".;")
+ if (!empty(db))
+ let path = strpart(db, 0, match(db, "/cscope.out$"))
+ set nocscopeverbose " suppress 'duplicate connection' error
+ exe "cs add " . db . " " . path
+ set cscopeverbose
+ endif
+endfunction
+au BufEnter /* call LoadCscope()
+
+"set nocsverb 
+"if filereadable("./cscope.out")       
+"    cs add cscope.out                 
+"else                                  
+"    cs add /usr/src/linux/cscope.out  
+"endif                                  
+"set csverb
+
+nmap <F3> :bp<CR>
+nmap <F4> :bn<CR>
+
+nmap <F5> :cp<CR>
+nmap <F6> :cn<CR>
+nmap <F10> :BuffergatorToggle <C-J><CR>
+
+"-----------------------------------------------------------------------"
+" Tag List 환경설정
+"-----------------------------------------------------------------------"
+    filetype on             " vim filetype on
+    nmap  <F7> :TlistToggle<CR>
+    let Tlist_Ctags_Cmd = "/usr/bin/ctags"  " ctags 프로그램 위치
+    let Tlist_Inc_Winwidth = 0      " window width change off
+    let Tlist_Exit_OnlyWindow = 0       " tag/file 선택 완료 시 taglist
+                        " window close = off
+    let Tlist_Auto_Open = 0         " vim 시작 시 window open
+    let Tlist_Use_Right_Window = 1      " vim 시작 시 window open
+	let Tlist_WinWidth = 50
+
+"-----------------------------------------------------------------------"
+" Source Explorer 환경설정
+"-----------------------------------------------------------------------"
+    nmap  <F8> :SrcExplToggle<CR>
+    nmap  <C-H> <C-W>h
+    nmap  <C-J> <C-W>j
+    nmap  <C-K> <C-W>k
+    nmap  <C-L> <C-W>l
+
+    let g:SrcExpl_winHeight = 15    " SrcExpl 윈도우 높이 지정
+    let g:SrcExpl_refreshTime = 100     " refreshing time = 100ms
+    let g:SrcExpl_jumpKey = "<ENTER>"      " 해당 definition으로 jump
+    let g:SrcExpl_gobackKey = "<SPACE>"        " back
+    let g:SrcExpl_isUpdateTags = 0      " tag file update = off
+    let g:SrcExpl_searchLocalDef = 1      " Enable the local definition searcning.
+
+"-----------------------------------------------------------------------"
+" NERD Tree 환경설정
+"-----------------------------------------------------------------------"
+nmap <F9> :NERDTreeToggle<CR>
+let NERDTreeWinPos = "left"
+
+"------------------------------
+set tabstop=4       "탭 간격
+set background=dark	"화면배경을 어둡게
+set smartindent     "지능적인 들여쓰기 사용
+set cindent
+set ruler		"우측 하단에 행, 열번호 표시
+set sw=4    "자동 들여쓰기시 4칸씩 들여쓰기
+set sts=4
+set hlsearch        "검색어 강조 기능
+set showmatch       "() , {}에서 닫는 괄호를 입력할때 일치하는 괄호 보여줌
+set number          "작업 행 번호 사용
+set paste!	 "붙여넣기시 계단현상 제거
+set statusline=%h%F%m%r%=[%l:%c(%p%%)]		"상태표시줄 포맷팅
+set title "타이틀바에 현재 편집중인 파일을 표시
+set history=200	 "명령어 기록 갯수
+set ignorecase	 "찾기에서 대/소문자를 구별하지 않음
+set fileencodings=utf-8,cp949
+set ai
+filetype on	"파일종류에 따른 구문 강조
+colorscheme elflord	"색상 테마를 elflord로 지정
+
+nmap <F11> :cp<CR>
+nmap <F12> :cn<CR>
+
+"================Restore Cursor========================================="
+function! ResCur()
+	if line("'\"") <= line("$")
+		normal! g`"
+	  	return 1
+  	endif
+endfunction
+
+augroup resCur
+	autocmd!
+	autocmd BufWinEnter * call ResCur()
+augroup END
+
